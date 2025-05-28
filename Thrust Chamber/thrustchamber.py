@@ -17,13 +17,13 @@ from CoolProp.CoolProp import PropsSI as psi
 
 class ThrustChamber:
     
-    def __init__(self, fuel, ox, T_fuel, T_ox, pcc_nominal, rof):
+    def __init__(self, fuel, ox, T_fuel, T_ox, pcc_nominal):
         self.fuel = fuel
         self.ox = ox
         self.pcc_nominal = pcc_nominal
         self.T_ox = T_ox
         self.T_fuel = T_fuel
-        self.rof = rof
+        # self.rof = rof
         self.rho_fuel = psi('D', 'T', self.T_fuel, 'P', self.pcc_nominal, self.fuel) # assuming incompressible fluid
         self.rho_ox = psi('D', 'T', self.T_ox, 'P', self.pcc_nominal, self.ox) # assuming incompressible fluid
         
@@ -206,24 +206,29 @@ class ThrustChamber:
             return d_th, pcc_min, ce_min, ce_max
         
             
-fuel = 'C2H6O'
-ox = 'O2'
-T_fuel = 400
-T_ox = 110
-pcc_nominal = 20e5
-F_nom = 2834#2500
-F_min = 1154#0.4*F_nom
-rof = 1
-pe_min = 0.6e5
-rof_min = 0.92
-rof_max = 1.12
-tc = ThrustChamber(fuel, ox, T_fuel, T_ox, pcc_nominal, rof)
+# fuel = 'C2H6O'
+# ox = 'O2'
+# T_fuel = 400
+# T_ox = 110
+# pcc_nominal = 20e5
+# F_nom = 2834#2500
+# F_min = 1154#0.4*F_nom
+# # rof = 1
+# pe_min = 0.6e5
+# rof_min = 0.92
+# rof_max = 1.17
+# tc = ThrustChamber(fuel, ox, T_fuel, T_ox, pcc_nominal)#, rof)
 
-d_th, pcc_min, ce_min, ce_max, ve_min, mdot_min, mdot_min_eta, F_min_comp, pe_max, ve_max, mdot_max, mdot_max_eta, F_max_comp, eps_e, eta_nozzle = tc.solve_for_thrust_constraint(
-    F_max=F_nom, F_min=F_min, pe_min=pe_min, rof_min=rof_min, rof_max=rof_max, eta_cc=0.95, beta=15, ret_ext=True)
+# d_th, pcc_min, ce_min, ce_max, ve_min, mdot_min, mdot_min_eta, F_min_comp, pe_max, ve_max, mdot_max, mdot_max_eta, F_max_comp, eps_e, eta_nozzle = tc.solve_for_thrust_constraint(
+#     F_max=F_nom, F_min=F_min, pe_min=pe_min, rof_min=rof_min, rof_max=rof_max, eta_cc=0.95, beta=15, ret_ext=True)
 
-print(f'Min effective Isp: {(ce_max+ce_min)/2:.2f}[m/s]')
+# print(f'Min effective Isp: {(ce_max+ce_min)/2:.2f}[m/s]')
 
-# isp im mittel ausrechnen
-# tabelle für matej machen
+# # isp im mittel ausrechnen
+# # tabelle für matej machen
+# eta = 1
+# tc.set_combustion(p=pcc_min, rof=rof_min)
+# c_star_min = tc.get_c_star(eta)
 
+# tc.set_combustion(p=pcc_nominal, rof=rof_max)
+# c_star_max = tc.get_c_star(eta)
