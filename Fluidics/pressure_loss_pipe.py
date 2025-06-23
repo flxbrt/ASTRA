@@ -226,3 +226,41 @@ Re = reynolds(vel, d, rho, eta)
 lam = friction_factor(Re, k=50e-6)
 
 deltap = lam*l*rho*vel**2/(2*d)/1e5
+
+#%% injector
+
+
+# general 
+ROF = 1.17
+mdot = 1.26
+
+mdot_fuel = 1/(1+ROF) * mdot
+mdot_ox = ROF/(1+ROF) * mdot
+
+# LOx
+fluid = 'O2'
+d = 4e-3
+N = 8
+
+mdot_ox = mdot_ox/N
+
+l = 0.01
+
+A = d**2/4*np.pi
+
+p = 30e5
+T = 90
+
+rho = psi('D','P',p,'T',T,fluid)
+eta = psi('viscosity','P',p,'T',T,fluid) # dynamic viscosity
+nu = eta/rho
+
+vel = m_dot/A/rho
+
+Re = reynolds(vel, d, rho, eta)
+
+lam = friction_factor(Re, k=50e-6)
+
+deltap1 = lam*l*rho*vel**2/(2*d)/1e5
+deltap2 = 0.5*rho*vel**2/1e5
+# Ethanol
