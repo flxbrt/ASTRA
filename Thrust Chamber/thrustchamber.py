@@ -206,21 +206,21 @@ class ThrustChamber:
             return d_th, pcc_min, ce_min, ce_max
         
             
-# fuel = 'C2H6O'
-# ox = 'O2'
-# T_fuel = 400
-# T_ox = 110
-# pcc_nominal = 20e5
-# F_nom = 2834#2500
-# F_min = 1154#0.4*F_nom
-# # rof = 1
-# pe_min = 0.6e5
-# rof_min = 0.92
-# rof_max = 1.17
-# tc = ThrustChamber(fuel, ox, T_fuel, T_ox, pcc_nominal)#, rof)
+fuel = 'C2H6O'
+ox = 'O2'
+T_fuel = 400
+T_ox = 110
+pcc_nominal = 20e5
+F_nom = 2834#2500
+F_min = 1154#0.4*F_nom
+# rof = 1
+pe_min = 0.6e5
+rof_min = 0.92
+rof_max = 1.17
+tc = ThrustChamber(fuel, ox, T_fuel, T_ox, pcc_nominal)#, rof)
 
-# d_th, pcc_min, ce_min, ce_max, ve_min, mdot_min, mdot_min_eta, F_min_comp, pe_max, ve_max, mdot_max, mdot_max_eta, F_max_comp, eps_e, eta_nozzle = tc.solve_for_thrust_constraint(
-#     F_max=F_nom, F_min=F_min, pe_min=pe_min, rof_min=rof_min, rof_max=rof_max, eta_cc=0.95, beta=15, ret_ext=True)
+d_th, pcc_min, ce_min, ce_max, ve_min, mdot_min, mdot_min_eta, F_min_comp, pe_max, ve_max, mdot_max, mdot_max_eta, F_max_comp, eps_e, eta_nozzle = tc.solve_for_thrust_constraint(
+    F_max=F_nom, F_min=F_min, pe_min=pe_min, rof_min=rof_min, rof_max=rof_max, eta_cc=0.95, beta=15, ret_ext=True)
 
 # print(f'Min effective Isp: {(ce_max+ce_min)/2:.2f}[m/s]')
 
