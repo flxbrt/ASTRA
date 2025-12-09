@@ -28,7 +28,8 @@ class ThrustChamber:
         self.rho_ox = psi('D', 'T', self.T_ox, 'P', self.pcc_nominal, self.ox) # assuming incompressible fluid
         
     def init_combustion(self):
-        comb_base = ct.Solution('gri30_WARR.yaml')
+        # comb_base = ct.Solution('gri30_WARR.yaml')
+        comb_base = ct.Solution('gri30_marinov.yaml')
         self.comb_base = ct.Quantity(comb_base, constant='HP')
         
     def set_combustion(self, p, rof):

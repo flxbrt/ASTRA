@@ -104,7 +104,7 @@ plt.grid()
 # cooling schannel estimation
 
 h = 1e-3
-w = 1e-3/2
+w = 1e-3
 A = h*w
 U = 2*(h+w)
 
@@ -139,6 +139,22 @@ lam = friction_factor(Re, k=50e-6)
 deltap = lam*l*rho*vel**2/(2*d_hyd)/1e5
 
 # deltap2 = lam*l/d/2/A**2/rho*m_dot**2/1e5
+
+
+#%% cooling channel porous
+
+# https://de.wikipedia.org/wiki/Forchheimer-Gleichung
+# s. Sascha chat 18.11.25
+
+
+
+K = 8*10**-10
+K = 2*10**-7
+
+deltap_porous = eta*vel/K/1e5*l
+
+
+
 
 #%% hihg pressure system
 
