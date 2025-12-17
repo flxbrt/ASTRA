@@ -34,7 +34,6 @@ class continuity:
         self.p_std = 101325             # https://en.wikipedia.org/wiki/International_Standard_Atmosphere
         self.T_std = 288.15             # https://en.wikipedia.org/wiki/International_Standard_Atmosphere
     
-    
     def density(self, p, T):
         self.p = p
         self.T = T
