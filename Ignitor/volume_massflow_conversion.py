@@ -27,6 +27,8 @@ class continuity:
             'l/s': 1e-3,
             'm3/h': 1/3600,
             'm3/s': 1,
+            'std m3/s': 1,
+            'std m3/h': 1/3600,
             'std l/min': 1e-3/60,
             'std cm3/s': 1e-6,
             'std cm3/min': 1e-6/60}
@@ -153,167 +155,19 @@ class continuity:
             print(f"{r[0]:<{col1_width}} {r[1]:<{col2_width}}")
     
         print("="*(col1_width+col2_width) + "\n")
+        
 
 
-#%%
 
-hyd = continuity('H2')
-p = 10e5
-T = 293
-value = 0.5
-unit = 'g/s'
-hyd.print_all_conversions(value, unit, p, T)
-
-air = continuity('Air')
-rof = 40
-value *= rof
-unit = 'g/s'
-air.print_all_conversions(value, unit, p, T)
-
-
-#%% Option 1 to call this script
-
-value = 3
-unit = 'g/s'
-fluid = 'N2'
-p = 2e5
-T = 400
-
-opt1 = continuity(fluid)
-opt1.to_standard(value, unit)       # converts the input into SI units --> either into kg/s for a mass flow or into m^3/s for a volume flow
-print(f'Input scaled to SI units is {opt1.standard_value}')
-opt1.qdot_mdot(p=p, T=T, from_to='m_to_q') # converts the SI unit mass flow in an SI unit volume flow and vice versa
-print(f'Input scaled to SI units is {opt1.standard_value}')
-opt1.to_unit('std l/min')           # converts from SI unit into anoter unit of the same type (mass flow stays mass flow, volume flow stays volume flow)
-print(f'Input scaled to your unit of choice {opt1.scaled_value}')
-
-#%% Option 2 to call the script --> convert in any available unit and print them all
-
-opt2 = continuity(fluid)
-opt2.print_all_conversions(value, unit, p, T)
-
-#%% Chat GPT Lösung
-
-# import numpy as np
-# from CoolProp.CoolProp import PropsSI as psi
-
-# class Continuity:
-#     def __init__(self, fluid):
-#         self.fluid = fluid
-
-#         # Mass flows (always to kg/s)
-#         self.mdot = {
-#             'g/s': 1e-3,
-#             'kg/s': 1
-#         }
-
-#         # Actual volume flows (always to m^3/s)
-#         self.qdot_real = {
-#             'l/min': 1e-3/60,
-#             'l/s': 1e-3,
-#             'm3/h': 1/3600,
-#             'm3/s': 1
-#         }
-
-#         # Standardized volume flows (to m^3/s at std. conditions)
-#         self.qdot_std = {
-#             'std l/min': 1e-3/60,
-#             'std cm3/s': 1e-6,
-#             'std cm3/min': 1e-6/60,
-#             'sccm': 1e-6/60
-#         }
-
-#         # Standard conditions
-#         self.p_std = 1e5
-#         self.T_std = 293
-
-#     # -------------------------
-#     # Thermodynamic properties
-#     # -------------------------
-#     def fluid_properties(self, p, T):
-#         rho = psi('D', 'P', p, 'T', T, self.fluid)
-#         eta = psi('viscosity', 'P', p, 'T', T, self.fluid)
-#         sos = psi('speed_of_sound', 'P', p, 'T', T, self.fluid)
-#         return rho, eta, sos
-
-#     def compute_density(self, p, T):
-#         self.rho = psi('D', 'P', p, 'T', T, self.fluid)
-#         self.rho_std = psi('D', 'P', self.p_std, 'T', self.T_std, self.fluid)
-
-#     # -------------------------
-#     # Unit conversion
-#     # -------------------------
-#     def to_standard(self, value, unit):
-#         """Convert any unit to internal SI (kg/s or m³/s)."""
-#         if unit in self.mdot:
-#             factor = self.mdot[unit]
-#             self.standard_value = value * factor
-#             self.flow_type = "mass"
-
-#         elif unit in self.qdot_real:
-#             factor = self.qdot_real[unit]
-#             self.standard_value = value * factor
-#             self.flow_type = "vol_real"
-
-#         elif unit in self.qdot_std:
-#             factor = self.qdot_std[unit]
-#             # Convert std-volume → real-volume using density ratio
-#             self.standard_value = value * factor
-#             self.flow_type = "vol_std"
-
-#         else:
-#             raise ValueError(f"Unit {unit} not defined")
-
-#     def to_unit(self, unit, p=None, T=None):
-#         """Convert SI (kg/s or m³/s) into any other unit."""
-#         rho_fac = 1
-
-#         # Case: converting volume flow (standardized vs real)
-#         if unit in self.qdot_std:
-#             if p is None or T is None:
-#                 raise ValueError("Need p,T for std conversions")
-#             self.compute_density(p, T)
-#             rho_fac = self.rho / self.rho_std
-#             factor = 1 / self.qdot_std[unit]
-
-#         elif unit in self.qdot_real:
-#             factor = 1 / self.qdot_real[unit]
-
-#         elif unit in self.mdot:
-#             factor = 1 / self.mdot[unit]
-
-#         else:
-#             raise ValueError(f"Unit {unit} not defined")
-
-#         return self.standard_value * factor * rho_fac
-
-#     # -------------------------
-#     # Universal table output
-#     # -------------------------
-#     def print_all_conversions(self, value, unit, p, T):
-#         self.to_standard(value, unit)
-#         self.compute_density(p, T)
-
-#         print("\n------------------------------------------------------------")
-#         print(f"   Converted Mass & Volume Flows (Input: {value} {unit})")
-#         print("------------------------------------------------------------")
-#         print(f"{'Type':12} | {'Unit':12} | {'Value':12}")
-#         print("------------------------------------------------------------")
-
-#         # Mass flow outputs
-#         if self.flow_type in ["mass"]:
-#             for u in self.mdot:
-#                 v = self.to_unit(u)
-#                 print(f"{'mass':12} | {u:12} | {v:12.4g}")
-
-#         # Volume flow outputs (real)
-#         for u in self.qdot_real:
-#             v = self.to_unit(u)
-#             print(f"{'vol_real':12} | {u:12} | {v:12.4g}")
-
-#         # Volume flow outputs (std)
-#         for u in self.qdot_std:
-#             v = self.to_unit(u, p, T)
-#             print(f"{'vol_std':12} | {u:12} | {v:12.4g}")
-
-#         print("------------------------------------------------------------\n")
+if __name__ == '__main__':
+    check = continuity('H2')
+    check.to_standard(1, 'g/s')
+    check.qdot_mdot(1e5, 293, 'm_to_q')
+    check.to_unit('std l/min')
+    print(check.scaled_value)
+    
+    check = continuity('Air')
+    check.to_standard(30.1, 'g/s')
+    check.qdot_mdot(1e5, 293, 'm_to_q')
+    check.to_unit('std l/min')
+    print(check.scaled_value)

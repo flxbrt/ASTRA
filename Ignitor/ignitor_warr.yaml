@@ -1,0 +1,52 @@
+
+
+
+
+fluid:
+  fu:           "H2"
+  ox:           "O2"
+  T_fu:         293
+  T_ox:         293
+
+
+design:                 # design parameters and operating conditions
+  of:           40      # mass specific
+  Pi_p:         1.0     # pressure ratio ignitor chamber to main chamber -> 1.2 for decoupling
+  Pi_deltap:    0.1     # pressure drop across injector -> as a first guess -> should actually come from injection velocity ratios
+  L_st:         0.2     # l star
+  
+  rho:          8900    # kg/m^3 copper chromium zirkonium https://www.zollern.com/fileadmin/data/ZGM_Schmiede/files/de/datenblaetter/ZOLLERN-20200_Datenblatt_Schmiede_CCZr.pdf
+  cp:           394     # J/kg/K
+  lam:          335     # W/m*K
+  
+  s:            0.005    # thickness of wall material in m
+  
+  dur:          3       # hot fire duration used to determine wall temperature
+  
+  p_stor:       20000000 # stoarge pressure for onborad ignitor
+
+
+models:                 # modelling parameters and assumptions
+
+  key:          'ai'    # compute required power either via 'ai' -> auto ignition or via 'to' -> thermal output
+
+  eta:          0.75    # combustion efficiency
+
+  P_ai:         0.05    # ratio of ignitor power to power required to raise propellant temperature of main chamber to auto ignition temperature
+  P_to:         0.02    # ratio of igniter power to total thermal power of main chamber
+
+  P_s:          0.4     # additional safety factor for ignitor power
+
+  p_init:       150000  # pressure at which ignitor ignites
+
+  T_ai:         833     # auto ingition temperature H2 according to Francesco Palmese p. 30 & https://gestis.dguv.de/data?name=007010
+
+  cd:           0.8     # discharge coefficient injector
+  
+data:
+  
+  mie:          'raw_data_mie_Ono2007_fig4.npy'             # minimum ignition energy
+  dq:           'raw_data_dq_Kim2001_fig3_1.0atm.npy'       # quenching distance
+  Vbd:          'raw_data_Vbd_Lienesch2009_fig2.npy'        # breakdown voltage
+  
+  verbose:      1

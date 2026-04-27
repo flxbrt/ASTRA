@@ -30,13 +30,39 @@ def calc_chocked_mass_flow(d_th, gamma, M, T, p):
         m_dot = np.pi*d_th**2/4*p/np.sqrt(T*R_ideal/M)*theta
         return m_dot
 
-q_pressure_reducer = get_q(Cv=0.3, p=300e5, T=293, fluid='N2')
-m_dot_pressure_reducer = psi('D','P',1.013e5,'T',293,'N2')*q_pressure_reducer/60/1000
+q_pressure_reducer = get_q(Cv=0.1, p=300e5, T=293, fluid='Air')
+m_dot_pressure_reducer = psi('D','P',1.013e5,'T',293,'Air')*q_pressure_reducer/60/1000
+
+print(m_dot_pressure_reducer)
+
 
 # entweder gibt safety valve hersteller an, welchen volumenstrom sie bei welchem druck abführen können
 # oder die geben öffnungsdurchmesser an und man muss sich den massenstrom ausrechnen
 
-m_dot_safety_valve = calc_chocked_mass_flow(d_th=8e-3, gamma=1.4, M=28, T=270, p=40e5)
+m_dot_safety_valve = calc_chocked_mass_flow(d_th=6e-3, gamma=1.4, M=29, T=270, p=25e5)
+
+print(m_dot_safety_valve)
+
+if m_dot_safety_valve > m_dot_pressure_reducer:
+    print('Works :)')
+else:
+    print('no good')
+    
+    
+#%%
+
+q_pressure_reducer = get_q(Cv=0.044, p=200e5, T=293, fluid='H2')
+print(q_pressure_reducer)
+m_dot_pressure_reducer = psi('D','P',1.013e5,'T',293,'H2')*q_pressure_reducer/60/1000
+
+print(m_dot_pressure_reducer)
+
+# entweder gibt safety valve hersteller an, welchen volumenstrom sie bei welchem druck abführen können
+# oder die geben öffnungsdurchmesser an und man muss sich den massenstrom ausrechnen
+
+m_dot_safety_valve = calc_chocked_mass_flow(d_th=6e-3, gamma=1.4, M=2, T=270, p=25e5)
+
+print(m_dot_safety_valve)
 
 if m_dot_safety_valve > m_dot_pressure_reducer:
     print('Works :)')
