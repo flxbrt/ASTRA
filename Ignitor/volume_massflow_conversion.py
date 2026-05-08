@@ -166,6 +166,12 @@ if __name__ == '__main__':
     check.to_unit('std l/min')
     print(check.scaled_value)
     
+    check = continuity('H2')
+    check.to_standard(945, 'std l/min')
+    check.qdot_mdot(1e5, 293, 'q_to_m')
+    check.to_unit('g/s')
+    print(check.scaled_value)
+    
     check = continuity('Air')
     check.to_standard(30.1, 'g/s')
     check.qdot_mdot(1e5, 293, 'm_to_q')

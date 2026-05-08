@@ -251,7 +251,7 @@ def convert_m_to_qn(mdot_fu, mdot_ox):
 
 def injector_pressure_drop(dfu, dox, mdot_fu, mdot_ox, p, cd, T_fu=293, T_ox=293):
     
-    def converge_on_pressure(mdot, A, pcc, T, fluid):
+    def converge_on_pressure(mdot, A, cd, pcc, T, fluid):
         
         # pcc is static pressure
         # p is the total pressure I want to figure out
@@ -287,8 +287,8 @@ def injector_pressure_drop(dfu, dox, mdot_fu, mdot_ox, p, cd, T_fu=293, T_ox=293
     Afu = np.pi*dfu**2/4
     Aox = np.pi*dox**2/4
     
-    pfu, v_fu = converge_on_pressure(mdot_fu, Afu, p, T_fu, 'H2')
-    pox, v_ox = converge_on_pressure(mdot_ox, Aox, p, T_ox, 'Air')
+    pfu, v_fu = converge_on_pressure(mdot_fu, Afu, cd, p, T_fu, 'H2')
+    pox, v_ox = converge_on_pressure(mdot_ox, Aox, cd, p, T_ox, 'Air')
     
     return pfu, pox, v_fu, v_ox
     
@@ -299,15 +299,16 @@ def max_line_pressure(mdot_fu, mdot_ox, dfu, dox, pinj_fu, pinj_ox, T_fu, T_ox, 
     fu_line = Cascade()
     fu_line.set_fluid('H2')
         
-    pipe = Pipe(l=2, d=6e-3)
-    mfc = Fixed(0.97e5) # 1000 slpm https://documents.alicat.com/specifications/DOC-SPECS-MCQ-HIGH.pdf
-    mv = Resistor(kv=0.28, T=T_fu)
+    pipe = Pipe(l=2, d=4e-3)
+    filt = Resistor(kv=0.57*0.865, T=T_ox)
+    mfc = Fixed(0.17e5) # 1000 slpm https://documents.alicat.com/specifications/DOC-SPECS-MCQ-HIGH.pdf
+    mv = Resistor(kv=0.6, T=T_fu)
     cv = Resistor(kv=0.47*0.865, T=T_fu)
     # filt = Resistor(kv=0.5, T=T_fu)
     # inj = Fixed(dpinj_fu)
     
-    fu_line.set_layout([pipe, mfc, mv, cv])
-    fu_line.set_boundary_condition(value=(pinj_fu, mdot_fu), typ='pm', index=(3,), port=('outlet', ))
+    fu_line.set_layout([pipe, filt, mfc, mv, cv])
+    fu_line.set_boundary_condition(value=(pinj_fu, mdot_fu), typ='pm', index=(4,), port=('outlet', ))
     fu_line.solve()
     # fu_line.print_cascade()
     
@@ -315,14 +316,15 @@ def max_line_pressure(mdot_fu, mdot_ox, dfu, dox, pinj_fu, pinj_ox, T_fu, T_ox, 
     ox_line.set_fluid('Air')
     
     pipe = Pipe(l=2, d=10e-3)
+    filt = Resistor(kv=0.88*0.865, T=T_ox)
     mfc = Fixed(0.59e5)
     mv = Resistor(kv=0.6, T=T_ox)
     cv = Resistor(kv=1.8*0.865, T=T_ox)
     # filt = Resistor(kv=0.484*0.869, T=T_ox)
     # inj = Fixed(12e5*0.2)
     
-    ox_line.set_layout([pipe, mfc, mv, cv])
-    ox_line.set_boundary_condition(value=(pinj_ox, mdot_ox), typ='pm', index=(3,), port=('outlet', ))
+    ox_line.set_layout([pipe, filt, mfc, mv, cv])
+    ox_line.set_boundary_condition(value=(pinj_ox, mdot_ox), typ='pm', index=(4,), port=('outlet', ))
     ox_line.solve()
     # ox_line.print_cascade()
     
@@ -411,17 +413,17 @@ if __name__ == '__main__':
     dox = 0.0055
     
     eta = 0.75
-    cd = 0.6
+    cd = 0.4
     
     T_fu = 293
     T_ox = 293
     
     ''' berücksichtigt aktuell noch nicht dass normvolumenströme nicht so übertragbar sind '''
-    fu_acc_abs = 0.021*925 # in std l/min 
+    fu_acc_abs = 0.021*945 # in std l/min 
     ox_acc_abs = 0.021*2000 # datasheet says +/- 2% + 0.1% for analog read out
 
     p_range = np.linspace(2e5, 12e5, 21)
-    rof_range = np.linspace(20, 41, 21)
+    rof_range = np.linspace(20, 81, 61)
     
     # p_range = np.array([[12e5]])
     # rof_range = np.array([[30]])
@@ -517,7 +519,7 @@ if __name__ == '__main__':
         fu_acc_rel_arr, ox_acc_rel_arr,
         of_min_rel_arr, of_max_rel_arr,
         dp_iso=1,
-        Vdot_fu_limit=925,
+        Vdot_fu_limit=945,
         Vdot_ox_limit=2000,
         p_fu_iso=22,
         p_ox_iso=22,

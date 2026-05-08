@@ -369,14 +369,15 @@ if __name__=='__main__':
     fu_line.set_fluid('H2')
         
     pipe = Pipe(l=2, d=6e-3)
+    filt = Resistor(kv=0.88*0.865, T=T_fu)
     mfc = Fixed(0.97e5) # 1000 slpm https://documents.alicat.com/specifications/DOC-SPECS-MCQ-HIGH.pdf
     mv = Resistor(kv=0.28, T=T_fu)
     cv = Resistor(kv=0.47*0.865, T=T_fu)
     # filt = Resistor(kv=0.5, T=T_fu)
     # inj = Fixed(dpinj_fu)
     
-    fu_line.set_layout([pipe, mfc, mv, cv])
-    fu_line.set_boundary_condition(value=(pinj_fu, mdot_fu), typ='pm', index=(3,), port=('outlet', ))
+    fu_line.set_layout([pipe, filt, mfc, mv, cv])
+    fu_line.set_boundary_condition(value=(pinj_fu, mdot_fu), typ='pm', index=(4,), port=('outlet', ))
     fu_line.solve()
     fu_line.print_cascade()
     
@@ -384,14 +385,15 @@ if __name__=='__main__':
     ox_line.set_fluid('Air')
     
     pipe = Pipe(l=2, d=10e-3)
+    filt = Resistor(kv=0.88*0.865, T=T_ox)
     mfc = Fixed(0.59e5)
-    mv = Resistor(kv=0.54, T=T_ox)
+    mv = Resistor(kv=0.6, T=T_ox)
     cv = Resistor(kv=1.8*0.865, T=T_ox)
     # filt = Resistor(kv=0.484*0.869, T=T_ox)
     # inj = Fixed(12e5*0.2)
     
-    ox_line.set_layout([pipe, mfc, mv, cv])
-    ox_line.set_boundary_condition(value=(pinj_ox, mdot_ox), typ='pm', index=(3,), port=('outlet', ))
+    ox_line.set_layout([pipe, filt, mfc, mv, cv])
+    ox_line.set_boundary_condition(value=(pinj_ox, mdot_ox), typ='pm', index=(4,), port=('outlet', ))
     ox_line.solve()
     ox_line.print_cascade()
     

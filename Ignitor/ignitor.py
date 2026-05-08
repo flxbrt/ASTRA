@@ -293,6 +293,48 @@ def compute_geometry(ignitor):
     ignitor['output']['d_th_id'] = dth_id
     ignitor['output']['d_th'] = dth_eff
 
+    
+    # chamber volume and length given effective throat diameter
+    l_star = ignitor['design']['L_st']
+    d_c = ignitor['design']['d_c']
+
+    # A_th = dth_eff**2/4*np.pi
+    # V = l_star*A_th # chamber volume including conical section
+    
+    # epsilon_c = 2
+    # d_c = np.sqrt(2)*dth_eff
+    # l_c = 10*d_c
+    
+    # alpha = 118/2
+    
+    # while l_c/d_c > 5:
+    #     A_c = A_th*epsilon_c # cross sectional chamber area
+    #     d_c = np.sqrt(A_c*4/np.pi) # chamber diameter
+    
+    #     l_con = (d_c - dth_eff)/2/np.tan(alpha/180*np.pi) # length convergent nozzle section
+    #     V_con = l_con*np.pi/3*((dth_eff/2)**2+dth_eff*d_c/4+(d_c/2)**2) # volume convergent nozzle section
+    
+    #     V_c = V - V_con # volume combustion chamber
+    #     l_c = V_c/(d_c/2)**2/np.pi # length combustion chamber
+        
+    #     epsilon_c += 0.1
+
+    # ignitor['output']['d_c'] = d_c
+    # ignitor['output']['l_c'] = l_c
+    
+    A_th = dth_eff**2/4*np.pi
+    V = l_star*A_th
+    
+    alpha = 118/2
+    l_con = (d_c - dth_eff)/2/np.tan(alpha/180*np.pi) # length convergent nozzle section
+    V_con = l_con*np.pi/3*((dth_eff/2)**2+dth_eff*d_c/4+(d_c/2)**2) # volume convergent nozzle section
+    
+    V_c = V - V_con # volume combustion chamber
+    l_c = V_c/(d_c/2)**2/np.pi # length combustion chamber
+    
+    ignitor['output']['l_con'] = l_con
+    ignitor['output']['l_c'] = l_c
+
     return ignitor
 
 
@@ -579,7 +621,7 @@ def wall_temperature(ignitor, comb):
         
     ignitor['output']['T_max'] = temperature_array[-1,0]
     
-    return ignitor
+    return ignitor#, time, temperature_array
 
 def tank_volume(ignitor):
     
@@ -605,6 +647,8 @@ def tank_volume(ignitor):
 
     return ignitor
 
+
+
 def main(chamber, ignitor, eval_T=True):
     
     ignitor['output'] = {}
@@ -623,11 +667,12 @@ def main(chamber, ignitor, eval_T=True):
     
     if eval_T:
     
+        # ignitor, time, temperature_array = wall_temperature(ignitor, comb)
         ignitor = wall_temperature(ignitor, comb)
         
     ignitor = tank_volume(ignitor)
     
-    return ignitor
+    return ignitor, time, temperature_array
 
 #%%
 if __name__ == '__main__':

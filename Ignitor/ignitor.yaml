@@ -24,6 +24,8 @@ design:                 # design parameters and operating conditions
   dur:          3       # hot fire duration used to determine wall temperature
   
   p_stor:       20000000 # stoarge pressure for onborad ignitor
+  
+  d_c:          0.012
 
 
 models:                 # modelling parameters and assumptions

@@ -30,7 +30,7 @@ def calc_chocked_mass_flow(d_th, gamma, M, T, p):
         m_dot = np.pi*d_th**2/4*p/np.sqrt(T*R_ideal/M)*theta
         return m_dot
 
-q_pressure_reducer = get_q(Cv=0.1, p=300e5, T=293, fluid='Air')
+q_pressure_reducer = get_q(Cv=0.052, p=200e5, T=293, fluid='Air')
 m_dot_pressure_reducer = psi('D','P',1.013e5,'T',293,'Air')*q_pressure_reducer/60/1000
 
 print(m_dot_pressure_reducer)
